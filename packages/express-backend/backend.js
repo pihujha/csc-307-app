@@ -60,14 +60,16 @@ app.get("/users", (req, res) => {
 const findUserById = (id) =>
   users["users_list"].find((user) => user["id"] === id);
 
-app.get("/users/:id", (req, res) => {
-  const id = req.params["id"]; //or req.params.id
-  let result = findUserById(id);
-  if (result === undefined) {
-    res.status(404).send("Resource not found.");
-  } else {
-    res.send(result);
-  }
+app.get("/users", (req, res) => {
+  const name = req.query.name;
+  const job = req.query.job;
+
+  let result = users_list.users_list;
+
+  if (name) result = result.filter(u => u.name === name);
+  if (job) result = result.filter(u => u.job === job);
+
+  res.send({ users_list: result });
 });
 
 const addUser = (user) => {
@@ -79,6 +81,18 @@ app.post("/users", (req, res) => {
   const userToAdd = req.body;
   addUser(userToAdd);
   res.send();
+});
+
+app.delete("/users/:id", (req, res) => {
+  const id = req.params.id;
+  const index = users_list.users_list.findIndex(u => u.id === id);
+
+  if (index === -1) {
+    res.status(404).send("User not found");
+  } else {
+    users_list.users_list.splice(index, 1);
+    res.status(204).send();
+  }
 });
 
 app.listen(port, () => {
