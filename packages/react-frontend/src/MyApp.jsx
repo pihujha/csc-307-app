@@ -4,7 +4,7 @@ import Table from "./Table";
 import Form from "./Form";
 
 function MyApp() {
-const [characters, setCharacters] = useState([]);
+  const [characters, setCharacters] = useState([]);
 
   function fetchUsers() {
     const promise = fetch("http://localhost:8000/users");
@@ -44,19 +44,19 @@ const [characters, setCharacters] = useState([]);
   }
 
 
-function removeOneCharacter(id) {
-  fetch(`http://localhost:8000/users/${id}`, { method: "DELETE" })
-    .then(res => {
-      if (res.status === 204) {
-        setCharacters(prev => prev.filter(c => c.id !== id));
-      } else if (res.status === 404) {
-        console.log("User not found");
-      } else {
-        console.log("Delete failed with status", res.status);
-      }
-    })
-    .catch(err => console.log(err));
-}
+  function removeOneCharacter(id) {
+    fetch(`http://localhost:8000/users/${id}`, { method: "DELETE" })
+      .then(res => {
+        if (res.status === 204) {
+          setCharacters(prev => prev.filter(c => c.id !== id));
+        } else if (res.status === 404) {
+          console.log("User not found");
+        } else {
+          console.log("Delete failed with status", res.status);
+        }
+      })
+      .catch(err => console.log(err));
+  }
 
 
   return (
