@@ -39,15 +39,17 @@ const users = {
   ]
 };
 
+// send the hardcoded objects when user goes to website
 app.get("/", (req, res) => {
   res.send(users);
 });
 
+// useers can filter by name
 app.get("/users", (req, res) => {
-  const name = req.query.name;
+  const name = req.query.name; // read optional name and job
   const job = req.query.job;
 
-  let result = users.users_list;
+  let result = users.users_list; //first give hardcoded users
 
   if (name) result = result.filter(u => u.name === name);
   if (job) result = result.filter(u => u.job === job);
@@ -56,7 +58,7 @@ app.get("/users", (req, res) => {
 });
 
 const findUserById = (id) =>
-  users["users_list"].find((user) => user["id"] === id);
+  users["users_list"].find((user) => user["id"] === id); //first matching ele
 
 const addUser = (user) => {
   user.id = Math.random().toString(36).substr(2, 9);
@@ -77,7 +79,7 @@ app.delete("/users/:id", (req, res) => {
   if (index === -1) {
     res.status(404).send("User not found");
   } else {
-    users.users_list.splice(index, 1);
+    users.users_list.splice(index, 1); //sploce : remove from array idx
     res.status(204).send();
   }
 });
