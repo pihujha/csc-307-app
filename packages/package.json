@@ -1,0 +1,11 @@
+{
+  "name": "csc-307-packages",
+  "private": true,
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  },
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix react-frontend\" \"npm run dev --prefix express-backend\""
+  }
+}
+
