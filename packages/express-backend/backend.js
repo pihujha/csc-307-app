@@ -1,10 +1,23 @@
 // backend.js
 import express from "express";
 import cors from "cors";
-
+import mongoose from "mongoose";
+import userService from "./Models/user_service.js";
+import userModel from "./user.js"
+ 
 
 const app = express();
 const port = 8000;
+
+mongoose.set("debug", true);
+
+mongoose
+    .connect("mongodb://localhost:27017/users", {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    })
+    .catch((error) => console.log(error));
+
 
 app.use(cors());
 app.use(express.json());
@@ -39,50 +52,66 @@ const users = {
   ]
 };
 
-// send the hardcoded objects when user goes to website
 app.get("/", (req, res) => {
-  res.send(users);
+  res.send("Backend is running.");
 });
+
 
 // useers can filter by name
 app.get("/users", (req, res) => {
-  const name = req.query.name; // read optional name and job
-  const job = req.query.job;
+  const { name, job } = req.query;
 
-  let result = users.users_list; //first give hardcoded users
-
-  if (name) result = result.filter(u => u.name === name);
-  if (job) result = result.filter(u => u.job === job);
-
-  res.send({ users_list: result });
+  userService
+    .getUsers(name, job)
+    .then((users) => res.status(200).send({ users_list: users }))
+    .catch((err) => {
+      console.error("Error fetching users:", err);
+      res.status(500).send("Error fetching users");
+    });
 });
 
-const findUserById = (id) =>
-  users["users_list"].find((user) => user["id"] === id); //first matching ele
+app.get("/users/:id", (req, res) => {
+  const id = req.params.id;
 
-const addUser = (user) => {
-  user.id = Math.random().toString(36).substr(2, 9);
-  users.users_list.push(user);
-  return user;
-};
+  userService
+    .findUserById(id)
+    .then((user) => {
+      if (!user) return res.status(404).send("User not found");
+      res.status(200).send(user);
+    })
+    .catch((err) => {
+      console.log(err)
+      res.status(500).send("Error fetching user");
+    });
+});
 
 app.post("/users", (req, res) => {
-  const userToAdd = req.body;
-  const newUser = addUser(userToAdd);
-  res.status(201).send(newUser);
+  const user = req.body;
+
+  userService
+    .addUser(user)
+    .then((newUser) => res.status(201).send(newUser))
+    .catch((err) => {
+      console.log(err);
+      res.status(500).send(err.message);
+    });
 });
 
 app.delete("/users/:id", (req, res) => {
   const id = req.params.id;
-  const index = users.users_list.findIndex(u => u.id === id);
 
-  if (index === -1) {
-    res.status(404).send("User not found");
-  } else {
-    users.users_list.splice(index, 1); //sploce : remove from array idx
-    res.status(204).send();
-  }
+  userModel
+    .findByIdAndDelete(id)
+    .then((deletedUser) => {
+      if (!deletedUser) return res.status(404).send("User not found");
+      res.status(204).send(); 
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).send("Error deleting user");
+    });
 });
+
 
 app.listen(port, () => {
   console.log(
