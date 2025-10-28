@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1761516450752" clover="3.2.0">
-  <project timestamp="1761516450752" name="All files">
+<coverage generated="1761681043200" clover="3.2.0">
+  <project timestamp="1761681043201" name="All files">
     <metrics statements="6" coveredstatements="6" conditionals="2" coveredconditionals="2" methods="3" coveredmethods="3" elements="11" coveredelements="11" complexity="0" loc="6" ncloc="6" packages="1" files="1" classes="1"/>
     <file name="module.js" path="/Users/pihujha/Desktop/csc-307-app/packages/jest-unit-testing/module.js">
       <metrics statements="6" coveredstatements="6" conditionals="2" coveredconditionals="2" methods="3" coveredmethods="3"/>
